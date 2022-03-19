@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1"
+    />
+    <style>
+      html, body {
+          overflow: hidden;
+      }
+
+      #top, #bottom {
+          text-align: center;
+      }
+
+      .board {
+          width: 100%;
+          max-width: 600px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+      }
+
+      .row {
+          display: flex;
+          justify-content: center;
+          margin: 3px;
+      }
+
+      .cell {
+          font-size: 40px;
+          font-weight: bold;
+          border: 1px solid;
+          border-radius: 10px;
+          width: 53px;
+          height: 53px;
+          margin: 2px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: default;
+          user-select: none;
+      }
+
+      .grey {
+          color: lightgray;
+      }
+
+      .button {
+          font-size: 25px;
+          border: 1px solid;
+          border-radius: 10px;
+          width: 153px;
+          height: 43px;
+          margin: 2px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          user-select: none;
+      }
+    </style>
+    <title>小学成语游戏</title>
+  </head>
+  <body>
+      <h1 id="top">小学成语游戏</h1>
+      <hr>
+      <div id="display">
+  </body>
+  <script>
+    window.onload = function () {
+      words = [
+        '半途而废 bàn tú ér fèi To give up halfway 指做事情不能坚持到底，做到一半停下来，有始无终。不管事情有多困难，他总是坚持把事情做好，不会__ __ __ __。反义词: 再接再厉。', 
+        '杯弓蛇影 bēi gōng shé yǐng Extremely suspicious 比喻因疑神疑鬼(地将映在酒杯里的弓影误认为蛇)而引起恐惧。自己吓自己。小花曾经被朋友出卖后，就对类似的事情__ __ __ __，不再轻易相信别人。', 
+        '不耻下问 bù chǐ xià wèn Not embarrassed to ask and learn from people of lower status. 指乐意向学问或职位比自己低的人学习，而不觉得不好意思。形容虚心向别人学习。她虽然身为老师，但是却抱着__ __ __ __的学习精神，让人敬佩。反义词：骄傲自满。', 
+        '不可救药 bù ké jiù yào Beyond cure. 病重到无法医治的程度，比喻人或事已经到了无法挽救的地步。他做了那么多坏事仍然不知悔改，实在是__ __ __ __了。近义词：无药可救。反义词：不药而愈。', 
+        '不劳而获 bù láo ér huò Gain or profit without working for it. 自己不劳动而得到别人的劳动成果。大家都不喜欢和小花同组做作业，因为她总是不愿意多付出，想__ __ __ __。反义词：自食其力；自力更生', 
+        '不务正业 bù wù zhèng yè Not doing what one is supposed to do. 指不干正当的职业或丢下本职工作去干其他事情。哥哥每天__ __ __ __和狐朋狗友一起吃喝玩乐，弄得妈妈生气。近义词：游手好闲。反义词：发奋图强；埋头苦干。', 
+        "不自量力 bù zì liàng lì Overestimate one's own abilities. 指不能正确地估计自己的能力，做自己能力做不到的事情。她__ __ __ __挑战这项高难度的作业题而不向教授请教，结果不及格。反义词：量力而为；自知之明。", 
+        '长年累月 cháng nián lěi yuè For months & years. 形容经过了很长时间。小月优秀的成绩都是靠她__ __ __ __的努力得来的。反义词：一朝一夕。', 
+        '出人头地 chū rén tóu dì Be outstanding. 指高人一等，超出一般人。形容德才超众或成就突出。父母要孩子们努力读书，就是希望他们有一天能够__ __ __ __。近义词：出类拔萃。', 
+        '大公无私 dà gōng wú sī Just; righteous. 处理事情公正平等，没有私心，公正而不偏向任何一方。小玉是个__ __ __ __的班长，任何同学缺课时都会被她一一记下名字然后报给老师。反义词：自私自利；假公济私。', 
+        '当仁不让 dāng rén bù ràng Not pass on to others what one is called upon to do. 指碰到应做的好事就积极去做，不退让。小妹品德兼有，成绩优秀，因此__ __ __ __成为班长。近义词：自告奋勇。', 
+        '得过且过 dé guò qiě guò To muddle along. 形容胸无大志，过一天算一天，没有长远打算；也指对工作不负责任。他做事马马虎虎，总是抱着__ __ __ __的态度过日子，所以还是一事无成。反义词：精益求精。', 
+        '东窗事发 dōng chuān shì fā Bad deeds be exposed. 比喻阴谋坏事或罪行被揭发。她所做的坏事__ __ __ __了，所以被警察带走到警察局审问。', 
+        '发扬光大 fā yáng guāng dà Bring to greater heights. 使好的事物、传统等得到发展和提高。小华毕业后就专心把家族生意__ __ __ __，生意越做越大。反义词：一落千丈；每况愈下。', 
+        '奉公守法 fèng gōng shǒu fǎ Be law-abiding. 奉公行事，遵守法令，形容办事守规矩。新加坡是个讲法律的国家，每个公民都得__ __ __ __。反义词：胡作非为。', 
+        '改过自新 gǎi guò zì xīn Turn over a new leaf. 指改正过失，重新做人。只要懂得认错，每个人都有__ __ __ __的机会重新做人。反义词：执迷不悟。', 
+        '光明正大 guāng míng zhèng dà With nothing to hide. 多指心怀坦白，言行正派。小明做事一向__ __ __ __，绝对不会暗箭伤人。反义词：鬼鬼祟祟。', 
+        '害群之马 hài qún zhī mǎ A rotten apple in the barrel; a black sheep. 比喻危害集体的人。他是公司的__ __ __ __，总是胡言乱语、造谣是非。', 
+        "狐假虎威 hú jiǎ hǔ wēi To ride on someone else's power (& bully others by flaunting one's powerful connections). 比喻仪仗别人的势力欺压人。小花在爸爸的庇护下，经常__ __ __ __欺负同事。", 
+        '花言巧语 huā yán qiǎo yǔ Flattery. 指用来骗人的虚假而动听的话。小华爱讲__ __ __ __骗了不少女生。反义词：肺腑之言；忠言逆耳。', 
+        '画蛇添足 huà shé tiān zú Ruin the effect by adding something redundant. 比喻做了多余的事，反而有害无益，徒劳无功。 这张画已经很完整，多加东西就会是__ __ __ __了。近义词：多此一举；弄巧成拙。反义词：恰到好处；画龙点睛。', 
+        '家喻户晓 jiā yù hù xiǎo Known to all. 家家户户都清楚，人人都知道。小妹帮忙警方破案，获得表扬的事在邻里是__ __ __ __了。近义词：众所周知。反义词：无人知晓。', 
+        '见义勇为 jiàn yì yǒng wéi Having the courage to stand up for something. 看到正义的事，就勇敢地去做。小美看见有小女生被男生欺负，便__ __ __ __去帮她解围。近义词：拔刀相助；挺身而出。反义词：袖手旁观；见死不救。', 
+        '惊弓之鸟 jìng gōng zhī niǎo Panic-stricken. 比喻授过惊吓的人，碰到一点动静就非常害怕。匪徒一听见警声就有如__ __ __ __，逃之夭夭。', 
+        '井井有条 jǐng jǐng yǒu tiáo In perfect order. 形容说话办事有条有理，一点也不乱。小华做事__ __ __ __，所以老板很喜欢他。反义词：东倒西歪。', 
+        '口是心非 kǒu shì xīn fēi To say one thing and mean another. 嘴里说的是一套，心里想的却是另一套，指心口不一。你要小心他所说的话，因为他喜欢__ __ __ __。反义词：言行一致。', 
+        '苦口婆心 kǔ kǒu pó xīn A heartfelt lecture. 形容好心好意，耐心反复地劝导。妈妈__ __ __ __的劝说我们要努力读书，我们都铭记在心。近义词：好言相劝。', 
+        '老马识途 lǎo mǎ shí tú Experience counts. 比喻有经验的人对事情比较熟悉。幸好导游__ __ __ __，我们才能从雾里走出来。', 
+        '理直气壮 lǐ zhí qì zhuàng Confident & assertive. 形容理由充分，说话胆气壮。他__ __ __ __地解释给老师他迟到的理由后，老师决定不惩罚他。近义词：义正辞严。反义词：强词夺理。', 
+        '良药苦口 liáng yào kǔ kǒu Good medicine tastes bitter. 比喻衷心的劝告、尖锐的批评，听起来不舒服，但对改正缺点有好处。所谓"__ __ __ __"，我所说的话虽然刺耳，但是能帮助你改正缺点。近义词：忠言逆耳。', 
+        '路不拾遗 lù bù shí yí Honesty prevails throughout the society. 形容社会风气良好，路上没有人把别人丢失的东西捡走。新加坡的治安虽然好，但未必每个人都是__ __ __ __的好公民。反义词：顺手牵羊。', 
+        '名落孙山 míng luò sūn shān Fail in an examination. 指考试没有及格，或选拔没有录取(名字落在孙山的后面，而孙山是榜上最后一名)。他在考试之前努力复习，但最后还是__ __ __ __。近义词：榜上无名；一败涂地。反义词：名列前茅。', 
+        "目空一切 mù kōng yí qiè With one's nose in the air. 形容骄傲自大，什么都看不起。小明身为班长，总是__ __ __ __，不把别的同学放在眼里。近义词：目中无人。反义词：平易近人。", 
+        '青红皂白 qīng hóng zào bái Wheat and chaff; black and white; right and wrong. 指用青、红、黑、白四种颜色比喻事情的起因结果、来龙去脉、是非曲直。妈妈看见我和弟弟吵架时，便不分__ __ __ __地把我骂了一顿。', 
+        '情同手足 qíng tóng shǒu zú Brotherly love. 比喻感情很深厚，像亲兄弟一样。小华和我从小就是好朋友，__ __ __ __。反义词：势不两立。', 
+        '人云亦云 rén yún yì yún Follow what others have said. 人家怎么说，自己就跟着怎么说，指没有意见。学校里所传的传言只不过是__ __ __ __，你千万不要相信。', 
+        '三思而行 sān sī ér xíng Think twice before action. 指经过反复考虑，然后再去做。不管发生什么事情，你一定要__ __ __ __才能少犯错误。反义词：轻举妄动。', 
+        '伤天害理 shāng tiān hài lǐ Do things that are against reason and nature. 形容做事情凶恶残忍，丧尽天良，没有人性。这帮匪徒做了许多__ __ __ __的事情，警察都在通缉他们。近义词：丧尽天良。反义词：问心无愧。', 
+        "舍己为人 shě jǐ wèi rén Sacrifice one's life for another. 指舍弃自己的利益去帮助别人。她空闲的时间都在做义工，这种__ __ __ __的精神真是让人敬佩。近义词：助人为乐。反义词：假公济私。", 
+        '事半功倍 shì bàn gōng bèi Half the work done with double effect. 形容做事情的方法得当，费力小但是收效大。他做事情井井有条，事先计划好，往往取得__ __ __ __的效果。近义词：一举两得；一箭双雕。反义词：事倍功半。', 
+        '守望相助 shǒu wàng xiāng zhù Keep watch and help defend each other among neighbouring villages. 指邻居之间团结在一起，互相帮助。 邻居之间应该要__ __ __ __，才能减少邻里罪案发生。反义词： 坐视不理；袖手傍观。', 
+        '守株待兔 shǒu zhū dài tù Wait for gains without pains. 比喻不劳动而希望得到意外的收获。只有那些努力争取自己想要的东西的人才能成功，你千万不要__ __ __ __就希望自己能像他们一样成功。近义词：不劳而获。反义词：刻苦耐劳。', 
+        '水落石出 shuǐ luò shí chū The truth will be known eventually. 比喻事情终于真相大白。案情终于__ __ __ __了，相信警方会很快抓到凶手。近义词：真相大百。', 
+        '司空见惯 sī kōng jiàn guàn A matter of common occurrence. 比喻常见之事，不足为奇。对于小华这种无理取闹的行为，大家都已经__ __ __ __ 了。近义词：见怪不怪。反义词：大惊小怪；少见多怪。', 
+        '同甘共苦 tóng gān gòng kǔ To share bliss and adversity together. 比喻同欢乐，共患难。夫妻之间应该__ __ __ __，才能一起共度一生。反义词：勾心斗角。', 
+        '同心协力 tóng xīn xié lì United. 团结一致，共同努力。如果我们__ __ __ __，我们一定能在危机关头克服困难。反义词：自私自利。', 
+        "忘恩负义 wàng ēn fù yì Ungrateful, turn on one's friend. 忘记别人对自己的好处，反而做出对不起别人的事。我们做人要知恩图报，不能做个__ __ __ __ 的人。反义词：感恩图报。", 
+        '为非作歹 wéi fēi zuò dǎi Law breaking. 做种种坏事。他经常__ __ __ __，现在终于被警方抓到了。反义词：奉公守法。', 
+        '温故知新 wēn gù zhī xīn Gain new insights through reviewing old material. 复习学过的知识，从中获得新的理解和体会。小丽时常是全班同学得分最高的学生，因为她经常__ __ __ __。', 
+        '无微不至 wú wēi bù zhì Devoted care. 形容关怀、照顾得非常周到。妈妈总是__ __ __ __地照顾着家里的每一个人。反义词：莫不关心；置之不理。', 
+        "幸灾乐祸 xìng zāi lè huò Laugh at other's troubles. 在别人遇到灾祸时感到高兴，缺乏同情心。看到弟弟不小心摔到，哥哥却__ __ __ __地在一旁大笑，真是太不应该了！反义词：感同身受，同病相怜。", 
+        '袖手旁观 xiù shǒu páng guān Look on with indifference. 比喻置身事外，不帮忙。看见朋友有困难，我们应该伸出援手，而不是__ __ __ __。反义词：挺身而出，拔刀相助。', 
+        "掩耳盗铃 yǎn ěr dào líng Steal a bell while covering one's ears -- self-deception. 捂住耳朵偷铃当，以为自己听不见，别人也不会听见。比喻自己欺骗自己。你如果继续这些__ __ __ __的把戏，就只是在自欺欺人罢了。近义词：自欺欺人。", 
+        '一视同仁 yī shì tóng rén Treat all on the same footing. 比喻平等待人，不分厚薄、亲属。这个老板对每个员工都__ __ __ __，真是难得。反义词：厚此薄彼；另眼相看。', 
+        '以身作则 yǐ shēn zuò zé Set an example. 以自己的行动做出榜样。父母教育孩子最好的方法就是__ __ __ __，让孩子以他们作为榜样。反义词：上梁不正下梁歪。', 
+        '饮水思源 yǐn shuǐ sī yuán To keep in heart those who have guided you in the past. 比喻不忘本。我们做人应该要懂得__ __ __ __，感恩图报。反义词：过河拆桥。', 
+        '再接再励 zài jiē zài lì Make persistent efforts. 比喻继续努力，再加一把劲。这次失败不要灰心，__ __ __ __继续努力就能有成功的一天！反义词：半途而废；知难而退。', 
+        '执迷不悟 zhí mí bù wù Hold on obstinately to errors or wrong beliefs. 坚持错误而不知觉悟。他很顽固，总是__ __ __ __听不进别人的劝告。反义词：知错能改。', 
+        '志同道合 zhì tóng dào hé Share similar ideals and beliefs. 形容彼此志向相同，信仰、志趣一致。我和小明是__ __ __ __的好朋友，时常一起玩足球。反义词：道不同不相为谋；话不投机。', 
+        '装聋作哑 zhuāng lóng zuò yǎ To feign ignorance. 假装聋哑，故意不理睬，假装不知道。妹妹时常__ __ __ __，对妈妈的话和要求置之不理。近义词：装疯卖傻。'
+      ]
+      startGame(0,words)
+    }
+
+    function shuffle(secret) {
+      arr = secret.split("")
+      for (j = secret.length - 1; j > 0; j--) {
+        i = Math.floor(Math.random() * (j+1))
+        temp = arr[j]
+        arr[j] = arr[i]
+        arr[i] = temp
+      }
+      return arr.join("")
+    }
+
+    function startGame(streak, wordList) {
+
+      // initialise display containing board
+      display = document.getElementById("display")
+      board = document.createElement("div")
+      board.className = "board"
+
+      // initialise puzzle row, guess row, button row and streak message
+      secret_full = wordList[Math.floor(Math.random() * wordList.length)]
+      secret = secret_full.slice(0,4)
+      console.log("The secret word is " + secret)
+      puzzle = shuffle(secret)
+      row = document.createElement("div")
+      row.className = "row"
+      for (j = 0; j < puzzle.length; j++) {
+        cell = document.createElement("div")
+        cell.className = "cell"
+        cell.innerText = puzzle[j]
+        cell.id = "puzzle-" + j.toString()
+        row.append(cell)
+      }
+      board.append(row)
+
+      row = document.createElement("div")
+      row.className = "row"
+      for (j = 0; j < puzzle.length; j++) {
+        cell = document.createElement("div")
+        cell.className = "cell"
+        cell.id = "guess-" + j.toString()
+        row.append(cell)
+      }
+      board.append(row)
+
+      row = document.createElement("div")
+      row.className = "row"
+      cell = document.createElement("div")
+      cell.className = "button"
+      cell.innerText = "Shuffle"
+      cell.id = "shuffle"
+      row.append(cell)
+      cell = document.createElement("div")
+      cell.className = "button"
+      cell.classList.add("grey")
+      cell.innerText = "Clear"
+      cell.id = "clear"
+      row.append(cell)
+      board.append(row)
+      cell = document.createElement("div")
+      cell.className = "button"
+      cell.classList.add("grey")
+      cell.innerText = "Submit"
+      cell.id = "submit"
+      row.append(cell)
+      board.append(row)
+      
+      row = document.createElement("div")
+      row.className = "row"
+      row.id = "streak"
+      row.innerText = "Current Streak: " + streak.toString()
+      board.append(row)
+
+      display.append(board)
+
+      // set up event listeners for mouse clicks
+      pos = 0
+      guess = ""
+      giveup = 0
+      submitButton = document.getElementById("submit")
+      submitButton.addEventListener("click", function keyboardClick(event) {
+        giveup += 1
+        if (giveup > 4) {
+          alert("The answer is " + secret_full)
+          display.innerHTML = ""
+          document.removeEventListener("keydown", keyDown)
+          startGame(streak,wordList)
+        }
+        if (guess.length == secret.length) {
+          if (guess == secret) {
+            alert("Well Done! " + secret_full)
+            display.innerHTML = ""
+            document.removeEventListener("keydown", keyDown)
+            startGame(streak+1,wordList)
+          } else {
+            alert("Sorry, that's not it...")
+          }
+        }
+      })
+      clearButton = document.getElementById("clear")
+      clearButton.addEventListener("click", function keyboardClick(event) {
+        for (j = 0; j < puzzle.length; j++) {
+          guessCell = document.getElementById("guess-"+j.toString())
+          guessCell.innerText = ""
+        }
+        pos = 0
+        guess = ""
+        giveup = 0
+        for (j = 0; j < puzzle.length; j++) {
+          puzzleCell = document.getElementById("puzzle-"+j.toString())
+          puzzleCell.className = "cell"
+        }
+        submitButton.classList.add("grey")
+        clearButton.classList.add("grey")
+      })
+      shuffleButton = document.getElementById("shuffle")
+      shuffleButton.addEventListener("click", function keyboardClick(event) {
+        clearButton.click()
+        puzzle = shuffle(secret)
+        for (j = 0; j < puzzle.length; j++) {
+          puzzleCell = document.getElementById("puzzle-"+j.toString())
+          puzzleCell.innerText = puzzle[j]
+        }
+      })
+      for(j = 0; j < puzzle.length; j++) {
+        let puzzleCell = document.getElementById("puzzle-"+j.toString())
+        puzzleCell.addEventListener("click", function keyboardClick(event) {
+          if(guess.length < secret.length && !(puzzleCell.classList.contains("grey"))) {
+            guessCell = document.getElementById("guess-"+pos.toString())
+            guessCell.innerText = puzzleCell.innerText
+            guess += puzzleCell.innerText
+            pos += 1
+            giveup = 0
+            if (pos == 1) {
+              clearButton.classList.remove("grey")
+            }
+            if (pos + 1 == secret.length) {
+              submitButton.classList.remove("grey")
+            }
+            puzzleCell.classList.add("grey")
+          }
+        })
+      }
+
+      // set up event listeners for keyboard
+      document.addEventListener("keydown", keyDown = function(event) {
+        if (event.key == "Backspace") {
+          clearButton.click()
+        } else if (event.key == "Enter") {
+          submitButton.click()
+        } else if (event.key == "Escape") {
+          shuffleButton.click()
+        } else if (puzzle.includes(event.key.toUpperCase())) {
+          for (j = 0; j < puzzle.length; j++) {
+            let testCell = document.getElementById("puzzle-"+j.toString())
+            if (testCell.innerText == event.key.toUpperCase() && !(testCell.classList.contains("grey"))) {
+              testCell.click()
+              break
+            }
+          }
+        }
+      })
+
+    }
+  </script>
+</html>
